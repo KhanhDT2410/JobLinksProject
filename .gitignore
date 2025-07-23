@@ -1,0 +1,15 @@
+# Ignore build output folder
+/target/
+
+# Ignore IDE files
+*.iml
+.idea/
+.vscode/
+
+# Ignore logs
+*.log
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+/nbproject/

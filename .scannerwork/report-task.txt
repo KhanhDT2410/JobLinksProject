@@ -1,0 +1,6 @@
+projectKey=JobLinks
+serverUrl=http://localhost:9000
+serverVersion=10.5.1.90531
+dashboardUrl=http://localhost:9000/dashboard?id=JobLinks
+ceTaskId=dc6bfba8-2ba7-43c0-97e2-eb3bafdcbbed
+ceTaskUrl=http://localhost:9000/api/ce/task?id=dc6bfba8-2ba7-43c0-97e2-eb3bafdcbbed

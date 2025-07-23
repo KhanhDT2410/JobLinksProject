@@ -1,0 +1,547 @@
+USE [master]
+GO
+/****** Object:  Database [JobLinks]    Script Date: 6/29/2025 9:44:16 PM ******/
+CREATE DATABASE [JobLinks]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'JobLinks', FILENAME = N'D:\SQL\MSSQL16.MSSQLSERVER\MSSQL\DATA\JobLinks.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'JobLinks_log', FILENAME = N'D:\SQL\MSSQL16.MSSQLSERVER\MSSQL\DATA\JobLinks_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF
+GO
+ALTER DATABASE [JobLinks] SET COMPATIBILITY_LEVEL = 160
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [JobLinks].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [JobLinks] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [JobLinks] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [JobLinks] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [JobLinks] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [JobLinks] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [JobLinks] SET AUTO_CLOSE OFF 
+GO
+ALTER DATABASE [JobLinks] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [JobLinks] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [JobLinks] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [JobLinks] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [JobLinks] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [JobLinks] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [JobLinks] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [JobLinks] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [JobLinks] SET  ENABLE_BROKER 
+GO
+ALTER DATABASE [JobLinks] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [JobLinks] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [JobLinks] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [JobLinks] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [JobLinks] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [JobLinks] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [JobLinks] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [JobLinks] SET RECOVERY FULL 
+GO
+ALTER DATABASE [JobLinks] SET  MULTI_USER 
+GO
+ALTER DATABASE [JobLinks] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [JobLinks] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [JobLinks] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [JobLinks] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+ALTER DATABASE [JobLinks] SET DELAYED_DURABILITY = DISABLED 
+GO
+ALTER DATABASE [JobLinks] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+GO
+EXEC sys.sp_db_vardecimal_storage_format N'JobLinks', N'ON'
+GO
+ALTER DATABASE [JobLinks] SET QUERY_STORE = ON
+GO
+ALTER DATABASE [JobLinks] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 30), DATA_FLUSH_INTERVAL_SECONDS = 900, INTERVAL_LENGTH_MINUTES = 60, MAX_STORAGE_SIZE_MB = 1000, QUERY_CAPTURE_MODE = AUTO, SIZE_BASED_CLEANUP_MODE = AUTO, MAX_PLANS_PER_QUERY = 200, WAIT_STATS_CAPTURE_MODE = ON)
+GO
+USE [JobLinks]
+GO
+/****** Object:  Table [dbo].[categories]    Script Date: 6/29/2025 9:44:16 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[categories](
+	[category_id] [int] IDENTITY(1,1) NOT NULL,
+	[name] [nvarchar](100) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[category_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[messages]    Script Date: 6/29/2025 9:44:16 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[messages](
+	[message_id] [int] IDENTITY(1,1) NOT NULL,
+	[sender_id] [int] NULL,
+	[receiver_id] [int] NULL,
+	[task_id] [int] NULL,
+	[message] [nvarchar](max) NULL,
+	[sent_at] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[message_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[notifications]    Script Date: 6/29/2025 9:44:16 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[notifications](
+	[notification_id] [int] IDENTITY(1,1) NOT NULL,
+	[user_id] [int] NOT NULL,
+	[message] [nvarchar](max) NULL,
+	[is_read] [bit] NULL,
+	[created_at] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[notification_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[payments]    Script Date: 6/29/2025 9:44:16 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[payments](
+	[payment_id] [int] IDENTITY(1,1) NOT NULL,
+	[task_id] [int] NULL,
+	[payer_id] [int] NULL,
+	[payee_id] [int] NULL,
+	[amount] [decimal](10, 2) NULL,
+	[payment_time] [datetime] NULL,
+	[method] [varchar](50) NULL,
+	[status] [varchar](20) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[payment_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[reviews]    Script Date: 6/29/2025 9:44:16 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[reviews](
+	[review_id] [int] IDENTITY(1,1) NOT NULL,
+	[task_id] [int] NULL,
+	[reviewer_id] [int] NULL,
+	[reviewee_id] [int] NULL,
+	[rating] [int] NULL,
+	[comment] [nvarchar](max) NULL,
+	[review_date] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[review_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[system_logs]    Script Date: 6/29/2025 9:44:16 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[system_logs](
+	[log_id] [int] IDENTITY(1,1) NOT NULL,
+	[user_id] [int] NOT NULL,
+	[email] [nvarchar](255) NOT NULL,
+	[action] [nvarchar](50) NOT NULL,
+	[target] [nvarchar](100) NULL,
+	[description] [nvarchar](max) NULL,
+	[timestamp] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[log_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[task_applications]    Script Date: 6/29/2025 9:44:16 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[task_applications](
+	[application_id] [int] IDENTITY(1,1) NOT NULL,
+	[task_id] [int] NULL,
+	[worker_id] [int] NULL,
+	[message] [nvarchar](max) NULL,
+	[applied_at] [datetime] NULL,
+	[status] [varchar](20) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[application_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[task_assignments]    Script Date: 6/29/2025 9:44:16 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[task_assignments](
+	[task_id] [int] NOT NULL,
+	[worker_id] [int] NULL,
+	[assigned_at] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[task_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[tasks]    Script Date: 6/29/2025 9:44:16 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tasks](
+	[task_id] [int] IDENTITY(1,1) NOT NULL,
+	[user_id] [int] NULL,
+	[title] [nvarchar](200) NULL,
+	[description] [nvarchar](max) NULL,
+	[category_id] [int] NULL,
+	[location] [nvarchar](255) NULL,
+	[scheduled_time] [datetime] NULL,
+	[budget] [decimal](10, 2) NULL,
+	[status] [varchar](20) NULL,
+	[created_at] [datetime] NULL,
+	[region] [nvarchar](50) NULL,
+	[is_hidden] [bit] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[task_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[users]    Script Date: 6/29/2025 9:44:16 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[users](
+	[user_id] [int] IDENTITY(1,1) NOT NULL,
+	[full_name] [nvarchar](100) NULL,
+	[email] [nvarchar](100) NULL,
+	[phone] [nvarchar](20) NULL,
+	[password] [nvarchar](100) NULL,
+	[role] [varchar](20) NULL,
+	[address] [nvarchar](255) NULL,
+	[created_at] [datetime] NULL,
+	[locked] [bit] NULL,
+	[balance] [decimal](15, 2) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[user_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET IDENTITY_INSERT [dbo].[categories] ON 
+GO
+INSERT [dbo].[categories] ([category_id], [name]) VALUES (1, N'Cleaning')
+GO
+INSERT [dbo].[categories] ([category_id], [name]) VALUES (2, N'Delivery')
+GO
+INSERT [dbo].[categories] ([category_id], [name]) VALUES (3, N'Gardening')
+GO
+INSERT [dbo].[categories] ([category_id], [name]) VALUES (5, N'Repair')
+GO
+INSERT [dbo].[categories] ([category_id], [name]) VALUES (4, N'Tutoring')
+GO
+SET IDENTITY_INSERT [dbo].[categories] OFF
+GO
+SET IDENTITY_INSERT [dbo].[messages] ON 
+GO
+INSERT [dbo].[messages] ([message_id], [sender_id], [receiver_id], [task_id], [message], [sent_at]) VALUES (1, 1, 2, 1, N'Hello, are you available for cleaning?', CAST(N'2025-06-27T21:39:37.680' AS DateTime))
+GO
+INSERT [dbo].[messages] ([message_id], [sender_id], [receiver_id], [task_id], [message], [sent_at]) VALUES (2, 2, 1, 1, N'Yes, I am.', CAST(N'2025-06-27T21:39:37.680' AS DateTime))
+GO
+INSERT [dbo].[messages] ([message_id], [sender_id], [receiver_id], [task_id], [message], [sent_at]) VALUES (3, 3, 2, 2, N'Can you deliver today?', CAST(N'2025-06-27T21:39:37.680' AS DateTime))
+GO
+INSERT [dbo].[messages] ([message_id], [sender_id], [receiver_id], [task_id], [message], [sent_at]) VALUES (4, 2, 3, 2, N'Sure, what time?', CAST(N'2025-06-27T21:39:37.680' AS DateTime))
+GO
+SET IDENTITY_INSERT [dbo].[messages] OFF
+GO
+SET IDENTITY_INSERT [dbo].[notifications] ON 
+GO
+INSERT [dbo].[notifications] ([notification_id], [user_id], [message], [is_read], [created_at]) VALUES (1, 1, N'Your task has been assigned.', 0, CAST(N'2025-06-27T21:39:37.680' AS DateTime))
+GO
+INSERT [dbo].[notifications] ([notification_id], [user_id], [message], [is_read], [created_at]) VALUES (2, 2, N'You have a new message.', 0, CAST(N'2025-06-27T21:39:37.680' AS DateTime))
+GO
+INSERT [dbo].[notifications] ([notification_id], [user_id], [message], [is_read], [created_at]) VALUES (3, 3, N'Payment received.', 0, CAST(N'2025-06-27T21:39:37.680' AS DateTime))
+GO
+INSERT [dbo].[notifications] ([notification_id], [user_id], [message], [is_read], [created_at]) VALUES (4, 4, N'Application accepted.', 0, CAST(N'2025-06-27T21:39:37.680' AS DateTime))
+GO
+INSERT [dbo].[notifications] ([notification_id], [user_id], [message], [is_read], [created_at]) VALUES (5, 5, N'You received a review.', 0, CAST(N'2025-06-27T21:39:37.680' AS DateTime))
+GO
+INSERT [dbo].[notifications] ([notification_id], [user_id], [message], [is_read], [created_at]) VALUES (6, 1, N'<p>alo alo hót hòn họt</p>', 0, CAST(N'2025-06-29T21:35:36.387' AS DateTime))
+GO
+INSERT [dbo].[notifications] ([notification_id], [user_id], [message], [is_read], [created_at]) VALUES (7, 9, N'<p>alo alo hót hòn họt</p>', 0, CAST(N'2025-06-29T21:35:36.390' AS DateTime))
+GO
+INSERT [dbo].[notifications] ([notification_id], [user_id], [message], [is_read], [created_at]) VALUES (8, 2, N'<p>alo alo hót hòn họt</p>', 0, CAST(N'2025-06-29T21:35:36.397' AS DateTime))
+GO
+INSERT [dbo].[notifications] ([notification_id], [user_id], [message], [is_read], [created_at]) VALUES (9, 3, N'<p>alo alo hót hòn họt</p>', 0, CAST(N'2025-06-29T21:35:36.400' AS DateTime))
+GO
+INSERT [dbo].[notifications] ([notification_id], [user_id], [message], [is_read], [created_at]) VALUES (10, 4, N'<p>alo alo hót hòn họt</p>', 0, CAST(N'2025-06-29T21:35:36.400' AS DateTime))
+GO
+INSERT [dbo].[notifications] ([notification_id], [user_id], [message], [is_read], [created_at]) VALUES (11, 5, N'<p>alo alo hót hòn họt</p>', 0, CAST(N'2025-06-29T21:35:36.400' AS DateTime))
+GO
+INSERT [dbo].[notifications] ([notification_id], [user_id], [message], [is_read], [created_at]) VALUES (12, 6, N'<p>alo alo hót hòn họt</p>', 0, CAST(N'2025-06-29T21:35:36.400' AS DateTime))
+GO
+INSERT [dbo].[notifications] ([notification_id], [user_id], [message], [is_read], [created_at]) VALUES (13, 7, N'<p>alo alo hót hòn họt</p>', 0, CAST(N'2025-06-29T21:35:36.400' AS DateTime))
+GO
+INSERT [dbo].[notifications] ([notification_id], [user_id], [message], [is_read], [created_at]) VALUES (14, 8, N'<p>alo alo hót hòn họt</p>', 0, CAST(N'2025-06-29T21:35:36.400' AS DateTime))
+GO
+SET IDENTITY_INSERT [dbo].[notifications] OFF
+GO
+SET IDENTITY_INSERT [dbo].[payments] ON 
+GO
+INSERT [dbo].[payments] ([payment_id], [task_id], [payer_id], [payee_id], [amount], [payment_time], [method], [status]) VALUES (1, 1, 1, 2, CAST(300000.00 AS Decimal(10, 2)), CAST(N'2025-06-27T21:39:37.680' AS DateTime), N'Cash', N'completed')
+GO
+INSERT [dbo].[payments] ([payment_id], [task_id], [payer_id], [payee_id], [amount], [payment_time], [method], [status]) VALUES (2, 2, 2, 3, CAST(150000.00 AS Decimal(10, 2)), CAST(N'2025-06-27T21:39:37.680' AS DateTime), N'Bank', N'completed')
+GO
+INSERT [dbo].[payments] ([payment_id], [task_id], [payer_id], [payee_id], [amount], [payment_time], [method], [status]) VALUES (3, 3, 3, 4, CAST(100000.00 AS Decimal(10, 2)), CAST(N'2025-06-27T21:39:37.680' AS DateTime), N'Cash', N'completed')
+GO
+SET IDENTITY_INSERT [dbo].[payments] OFF
+GO
+SET IDENTITY_INSERT [dbo].[reviews] ON 
+GO
+INSERT [dbo].[reviews] ([review_id], [task_id], [reviewer_id], [reviewee_id], [rating], [comment], [review_date]) VALUES (1, 1, 1, 2, 5, N'Great job!', CAST(N'2025-06-27T21:39:37.680' AS DateTime))
+GO
+INSERT [dbo].[reviews] ([review_id], [task_id], [reviewer_id], [reviewee_id], [rating], [comment], [review_date]) VALUES (2, 2, 2, 3, 4, N'Fast delivery.', CAST(N'2025-06-27T21:39:37.680' AS DateTime))
+GO
+INSERT [dbo].[reviews] ([review_id], [task_id], [reviewer_id], [reviewee_id], [rating], [comment], [review_date]) VALUES (3, 3, 3, 4, 5, N'Very helpful.', CAST(N'2025-06-27T21:39:37.680' AS DateTime))
+GO
+SET IDENTITY_INSERT [dbo].[reviews] OFF
+GO
+SET IDENTITY_INSERT [dbo].[system_logs] ON 
+GO
+INSERT [dbo].[system_logs] ([log_id], [user_id], [email], [action], [target], [description], [timestamp]) VALUES (1, 9, N'adfv@gmail.com', N'REGISTER', N'User', N'Tài khoản mới được đăng ký: adfv@gmail.com', CAST(N'2025-06-29T15:27:42.860' AS DateTime))
+GO
+INSERT [dbo].[system_logs] ([log_id], [user_id], [email], [action], [target], [description], [timestamp]) VALUES (2, 3, N'c@example.com', N'LOCK_USER', N'User', N'Admin đã khóa tài khoản: a@example.com', CAST(N'2025-06-29T21:04:24.943' AS DateTime))
+GO
+INSERT [dbo].[system_logs] ([log_id], [user_id], [email], [action], [target], [description], [timestamp]) VALUES (3, 3, N'c@example.com', N'LOCK_USER', N'User', N'Admin đã khóa tài khoản: d@example.com', CAST(N'2025-06-29T21:04:26.650' AS DateTime))
+GO
+INSERT [dbo].[system_logs] ([log_id], [user_id], [email], [action], [target], [description], [timestamp]) VALUES (4, 3, N'c@example.com', N'UNLOCK_USER', N'User', N'Admin đã mở khóa tài khoản: d@example.com', CAST(N'2025-06-29T21:09:20.537' AS DateTime))
+GO
+INSERT [dbo].[system_logs] ([log_id], [user_id], [email], [action], [target], [description], [timestamp]) VALUES (6, 3, N'unknown', N'SỬA', N'TASK #4', N'Admin mở form sửa công việc có ID 4', CAST(N'2025-06-29T21:30:39.947' AS DateTime))
+GO
+INSERT [dbo].[system_logs] ([log_id], [user_id], [email], [action], [target], [description], [timestamp]) VALUES (7, 3, N'unknown', N'CẬP NHẬT', N'TASK #4', N'Admin đã cập nhật công việc có ID 4', CAST(N'2025-06-29T21:30:57.467' AS DateTime))
+GO
+INSERT [dbo].[system_logs] ([log_id], [user_id], [email], [action], [target], [description], [timestamp]) VALUES (8, 3, N'unknown', N'TẠO', N'ALL USERS', N'Admin đã tạo thông báo cho tất cả người dùng', CAST(N'2025-06-29T21:35:36.400' AS DateTime))
+GO
+INSERT [dbo].[system_logs] ([log_id], [user_id], [email], [action], [target], [description], [timestamp]) VALUES (9, 3, N'c@example.com', N'LOCK_USER', N'User', N'Admin đã khóa tài khoản: b@example.com', CAST(N'2025-06-29T21:37:20.660' AS DateTime))
+GO
+INSERT [dbo].[system_logs] ([log_id], [user_id], [email], [action], [target], [description], [timestamp]) VALUES (10, 3, N'c@example.com', N'UNLOCK_USER', N'User', N'Admin đã mở khóa tài khoản: b@example.com', CAST(N'2025-06-29T21:39:10.540' AS DateTime))
+GO
+INSERT [dbo].[system_logs] ([log_id], [user_id], [email], [action], [target], [description], [timestamp]) VALUES (11, 3, N'c@example.com', N'XÓA', N'TASK #4', N'Admin đã xóa công việc có ID 4', CAST(N'2025-06-29T21:39:28.443' AS DateTime))
+GO
+SET IDENTITY_INSERT [dbo].[system_logs] OFF
+GO
+SET IDENTITY_INSERT [dbo].[task_applications] ON 
+GO
+INSERT [dbo].[task_applications] ([application_id], [task_id], [worker_id], [message], [applied_at], [status]) VALUES (1, 1, 2, N'I can help with cleaning.', CAST(N'2025-06-27T21:39:37.680' AS DateTime), N'pending')
+GO
+INSERT [dbo].[task_applications] ([application_id], [task_id], [worker_id], [message], [applied_at], [status]) VALUES (2, 2, 3, N'I live nearby and can deliver.', CAST(N'2025-06-27T21:39:37.680' AS DateTime), N'pending')
+GO
+INSERT [dbo].[task_applications] ([application_id], [task_id], [worker_id], [message], [applied_at], [status]) VALUES (3, 3, 4, N'Available this weekend.', CAST(N'2025-06-27T21:39:37.680' AS DateTime), N'pending')
+GO
+SET IDENTITY_INSERT [dbo].[task_applications] OFF
+GO
+INSERT [dbo].[task_assignments] ([task_id], [worker_id], [assigned_at]) VALUES (1, 2, CAST(N'2025-06-27T21:39:37.680' AS DateTime))
+GO
+INSERT [dbo].[task_assignments] ([task_id], [worker_id], [assigned_at]) VALUES (2, 3, CAST(N'2025-06-27T21:39:37.680' AS DateTime))
+GO
+INSERT [dbo].[task_assignments] ([task_id], [worker_id], [assigned_at]) VALUES (3, 4, CAST(N'2025-06-27T21:39:37.680' AS DateTime))
+GO
+SET IDENTITY_INSERT [dbo].[tasks] ON 
+GO
+INSERT [dbo].[tasks] ([task_id], [user_id], [title], [description], [category_id], [location], [scheduled_time], [budget], [status], [created_at], [region], [is_hidden]) VALUES (1, 1, N'Clean house', N'Need someone to clean my apartment', 1, N'Ha Noi', CAST(N'2025-06-27T21:39:37.680' AS DateTime), CAST(300000.00 AS Decimal(10, 2)), N'pending', CAST(N'2025-06-27T21:39:37.680' AS DateTime), N'North', 0)
+GO
+INSERT [dbo].[tasks] ([task_id], [user_id], [title], [description], [category_id], [location], [scheduled_time], [budget], [status], [created_at], [region], [is_hidden]) VALUES (2, 2, N'Deliver package', N'Send a parcel to District 1', 2, N'TP HCM', CAST(N'2025-06-27T21:39:37.680' AS DateTime), CAST(150000.00 AS Decimal(10, 2)), N'pending', CAST(N'2025-06-27T21:39:37.680' AS DateTime), N'South', 0)
+GO
+INSERT [dbo].[tasks] ([task_id], [user_id], [title], [description], [category_id], [location], [scheduled_time], [budget], [status], [created_at], [region], [is_hidden]) VALUES (3, 3, N'Water plants', N'Help water the garden this weekend', 3, N'Da Nang', CAST(N'2025-06-27T21:39:37.680' AS DateTime), CAST(100000.00 AS Decimal(10, 2)), N'pending', CAST(N'2025-06-27T21:39:37.680' AS DateTime), N'Central', 0)
+GO
+SET IDENTITY_INSERT [dbo].[tasks] OFF
+GO
+SET IDENTITY_INSERT [dbo].[users] ON 
+GO
+INSERT [dbo].[users] ([user_id], [full_name], [email], [phone], [password], [role], [address], [created_at], [locked], [balance]) VALUES (1, N'Nguyen Van A', N'a@example.com', N'0123456789', N'123456', N'user', N'Ha Noi', CAST(N'2025-06-27T21:39:37.680' AS DateTime), 1, CAST(0.00 AS Decimal(15, 2)))
+GO
+INSERT [dbo].[users] ([user_id], [full_name], [email], [phone], [password], [role], [address], [created_at], [locked], [balance]) VALUES (2, N'Tran Thi B', N'b@example.com', N'0987654321', N'123456', N'user', N'TP HCM', CAST(N'2025-06-27T21:39:37.680' AS DateTime), 0, CAST(0.00 AS Decimal(15, 2)))
+GO
+INSERT [dbo].[users] ([user_id], [full_name], [email], [phone], [password], [role], [address], [created_at], [locked], [balance]) VALUES (3, N'Le Van C', N'c@example.com', N'0911222333', N'123456', N'admin', N'Da Nang', CAST(N'2025-06-27T21:39:37.680' AS DateTime), 0, CAST(0.00 AS Decimal(15, 2)))
+GO
+INSERT [dbo].[users] ([user_id], [full_name], [email], [phone], [password], [role], [address], [created_at], [locked], [balance]) VALUES (4, N'Pham Thi D', N'd@example.com', N'0999888777', N'123456', N'user', N'Hai Phong', CAST(N'2025-06-27T21:39:37.680' AS DateTime), 0, CAST(0.00 AS Decimal(15, 2)))
+GO
+INSERT [dbo].[users] ([user_id], [full_name], [email], [phone], [password], [role], [address], [created_at], [locked], [balance]) VALUES (5, N'Hoang Van E', N'e@example.com', N'0900123456', N'123456', N'user', N'Can Tho', CAST(N'2025-06-27T21:39:37.680' AS DateTime), 0, CAST(0.00 AS Decimal(15, 2)))
+GO
+INSERT [dbo].[users] ([user_id], [full_name], [email], [phone], [password], [role], [address], [created_at], [locked], [balance]) VALUES (6, N'Trần Văn Hi', N'hi@gmail.com', N'0328396969', N'123456', N'user', N'Ha Noi', CAST(N'2025-06-29T14:55:53.107' AS DateTime), 0, CAST(0.00 AS Decimal(15, 2)))
+GO
+INSERT [dbo].[users] ([user_id], [full_name], [email], [phone], [password], [role], [address], [created_at], [locked], [balance]) VALUES (7, N'Duong Duong', N'khanh@gmail.com', N'0969696969', N'123456', N'user', N'Ha Noi', CAST(N'2025-06-29T15:23:48.013' AS DateTime), 0, CAST(0.00 AS Decimal(15, 2)))
+GO
+INSERT [dbo].[users] ([user_id], [full_name], [email], [phone], [password], [role], [address], [created_at], [locked], [balance]) VALUES (8, N'Duong Duong Trong', N'trong@gmail.com', N'0989789456', N'123456', N'user', N'Ha Noi', CAST(N'2025-06-29T15:26:03.653' AS DateTime), 0, CAST(0.00 AS Decimal(15, 2)))
+GO
+INSERT [dbo].[users] ([user_id], [full_name], [email], [phone], [password], [role], [address], [created_at], [locked], [balance]) VALUES (9, N'dfsdfsdf', N'adfv@gmail.com', N'0328396969', N'123123', N'user', N'Ha Noi', CAST(N'2025-06-29T15:27:42.857' AS DateTime), 0, CAST(0.00 AS Decimal(15, 2)))
+GO
+SET IDENTITY_INSERT [dbo].[users] OFF
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ__categori__72E12F1B571619E3]    Script Date: 6/29/2025 9:44:16 PM ******/
+ALTER TABLE [dbo].[categories] ADD UNIQUE NONCLUSTERED 
+(
+	[name] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ__users__AB6E6164EDB099EF]    Script Date: 6/29/2025 9:44:16 PM ******/
+ALTER TABLE [dbo].[users] ADD UNIQUE NONCLUSTERED 
+(
+	[email] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[messages] ADD  DEFAULT (getdate()) FOR [sent_at]
+GO
+ALTER TABLE [dbo].[notifications] ADD  DEFAULT ((0)) FOR [is_read]
+GO
+ALTER TABLE [dbo].[notifications] ADD  DEFAULT (getdate()) FOR [created_at]
+GO
+ALTER TABLE [dbo].[payments] ADD  DEFAULT (getdate()) FOR [payment_time]
+GO
+ALTER TABLE [dbo].[payments] ADD  DEFAULT ('completed') FOR [status]
+GO
+ALTER TABLE [dbo].[reviews] ADD  DEFAULT (getdate()) FOR [review_date]
+GO
+ALTER TABLE [dbo].[system_logs] ADD  DEFAULT (getdate()) FOR [timestamp]
+GO
+ALTER TABLE [dbo].[task_applications] ADD  DEFAULT (getdate()) FOR [applied_at]
+GO
+ALTER TABLE [dbo].[task_applications] ADD  DEFAULT ('pending') FOR [status]
+GO
+ALTER TABLE [dbo].[task_assignments] ADD  DEFAULT (getdate()) FOR [assigned_at]
+GO
+ALTER TABLE [dbo].[tasks] ADD  DEFAULT ('pending') FOR [status]
+GO
+ALTER TABLE [dbo].[tasks] ADD  DEFAULT (getdate()) FOR [created_at]
+GO
+ALTER TABLE [dbo].[tasks] ADD  DEFAULT ((0)) FOR [is_hidden]
+GO
+ALTER TABLE [dbo].[users] ADD  CONSTRAINT [DF_users_role]  DEFAULT ('user') FOR [role]
+GO
+ALTER TABLE [dbo].[users] ADD  DEFAULT (getdate()) FOR [created_at]
+GO
+ALTER TABLE [dbo].[users] ADD  DEFAULT ((0)) FOR [locked]
+GO
+ALTER TABLE [dbo].[users] ADD  DEFAULT ((0.00)) FOR [balance]
+GO
+ALTER TABLE [dbo].[messages]  WITH CHECK ADD FOREIGN KEY([receiver_id])
+REFERENCES [dbo].[users] ([user_id])
+GO
+ALTER TABLE [dbo].[messages]  WITH CHECK ADD FOREIGN KEY([sender_id])
+REFERENCES [dbo].[users] ([user_id])
+GO
+ALTER TABLE [dbo].[messages]  WITH CHECK ADD FOREIGN KEY([task_id])
+REFERENCES [dbo].[tasks] ([task_id])
+GO
+ALTER TABLE [dbo].[notifications]  WITH CHECK ADD FOREIGN KEY([user_id])
+REFERENCES [dbo].[users] ([user_id])
+GO
+ALTER TABLE [dbo].[payments]  WITH CHECK ADD FOREIGN KEY([payee_id])
+REFERENCES [dbo].[users] ([user_id])
+GO
+ALTER TABLE [dbo].[payments]  WITH CHECK ADD FOREIGN KEY([payer_id])
+REFERENCES [dbo].[users] ([user_id])
+GO
+ALTER TABLE [dbo].[payments]  WITH CHECK ADD FOREIGN KEY([task_id])
+REFERENCES [dbo].[tasks] ([task_id])
+GO
+ALTER TABLE [dbo].[reviews]  WITH CHECK ADD FOREIGN KEY([reviewer_id])
+REFERENCES [dbo].[users] ([user_id])
+GO
+ALTER TABLE [dbo].[reviews]  WITH CHECK ADD FOREIGN KEY([reviewee_id])
+REFERENCES [dbo].[users] ([user_id])
+GO
+ALTER TABLE [dbo].[reviews]  WITH CHECK ADD FOREIGN KEY([task_id])
+REFERENCES [dbo].[tasks] ([task_id])
+GO
+ALTER TABLE [dbo].[system_logs]  WITH CHECK ADD  CONSTRAINT [FK_system_logs_user] FOREIGN KEY([user_id])
+REFERENCES [dbo].[users] ([user_id])
+GO
+ALTER TABLE [dbo].[system_logs] CHECK CONSTRAINT [FK_system_logs_user]
+GO
+ALTER TABLE [dbo].[task_applications]  WITH CHECK ADD FOREIGN KEY([task_id])
+REFERENCES [dbo].[tasks] ([task_id])
+GO
+ALTER TABLE [dbo].[task_applications]  WITH CHECK ADD FOREIGN KEY([worker_id])
+REFERENCES [dbo].[users] ([user_id])
+GO
+ALTER TABLE [dbo].[task_assignments]  WITH CHECK ADD FOREIGN KEY([task_id])
+REFERENCES [dbo].[tasks] ([task_id])
+GO
+ALTER TABLE [dbo].[task_assignments]  WITH CHECK ADD FOREIGN KEY([worker_id])
+REFERENCES [dbo].[users] ([user_id])
+GO
+ALTER TABLE [dbo].[tasks]  WITH CHECK ADD FOREIGN KEY([category_id])
+REFERENCES [dbo].[categories] ([category_id])
+GO
+ALTER TABLE [dbo].[tasks]  WITH CHECK ADD FOREIGN KEY([user_id])
+REFERENCES [dbo].[users] ([user_id])
+GO
+ALTER TABLE [dbo].[tasks]  WITH CHECK ADD  CONSTRAINT [FK_tasks_categories] FOREIGN KEY([category_id])
+REFERENCES [dbo].[categories] ([category_id])
+GO
+ALTER TABLE [dbo].[tasks] CHECK CONSTRAINT [FK_tasks_categories]
+GO
+ALTER TABLE [dbo].[reviews]  WITH CHECK ADD CHECK  (([rating]>=(1) AND [rating]<=(5)))
+GO
+USE [master]
+GO
+ALTER DATABASE [JobLinks] SET  READ_WRITE 
+GO
+
+
+CREATE TABLE [dbo].[reports](
+    report_id INT IDENTITY(1,1) PRIMARY KEY,
+    reporter_id INT NOT NULL,         -- người report
+    reported_id INT NOT NULL,         -- người bị report
+    task_id INT NULL,                 -- nếu report liên quan đến task cụ thể
+    message NVARCHAR(MAX) NOT NULL,   -- nội dung lý do report
+    report_time DATETIME DEFAULT GETDATE(),
+    status VARCHAR(20) DEFAULT 'pending' -- trạng thái: pending, resolved,...
+);
